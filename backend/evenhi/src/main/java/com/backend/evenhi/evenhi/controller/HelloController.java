@@ -15,4 +15,14 @@ public class HelloController {
     public String sayHi(){
         return "Hi mapa";
     }
+
+    @GetMapping("/hi-free-world")
+    public String sayWithNoAuth(){
+        return "Hi Free World (No Auth)";
+    }
+
+    @GetMapping("/guardian")
+    public String sayGardian(){
+        return "Hi guardian";
+    }
 }

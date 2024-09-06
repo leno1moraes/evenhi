@@ -34,23 +34,16 @@ public class EventController {
 
     @PutMapping("update/{eventId}")
     public String updateEvent(@PathVariable Long eventId,
-                             @RequestBody String title,
-                             @RequestBody Date data,
-                             @RequestBody String typeEvent,
-                             @AuthenticationPrincipal UserDetails userDetails
+                              @RequestBody EventDTO eventDTO,
+                              @AuthenticationPrincipal UserDetails userDetails
                              ){
-        eventService.updateEvent(eventId, title, data, typeEvent, userDetails.getUsername());
+        eventService.updateEvent(eventId, eventDTO.getTitle(), eventDTO.getData(), eventDTO.getTypeEvent(), userDetails.getUsername());
         return "Successfully Update!";
     }
 
     @DeleteMapping("/delete/{eventId}")
-    public String deleteEvent(@PathVariable Long eventId,
-                              @RequestBody String title,
-                              @RequestBody Date data,
-                              @RequestBody String typeEvent,
-                              @AuthenticationPrincipal UserDetails userDetails
-                            ){
-        eventService.updateEvent(eventId, title, data, typeEvent, userDetails.getUsername());
+    public String deleteEvent(@PathVariable Long eventId){
+        eventService.deleteEvent(eventId);
         return "Successfully Delete!";
     }
 

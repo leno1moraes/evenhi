@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:12-bullseye
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - evenhi_data:/var/lib/postgresql/data
+      # - ./backup:/backup
+      # - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8091:8080
+
+volumes:
+  evenhi_data:

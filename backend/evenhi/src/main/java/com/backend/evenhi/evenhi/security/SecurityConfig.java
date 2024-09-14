@@ -8,6 +8,7 @@ import com.backend.evenhi.evenhi.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +20,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class SecurityConfig {
 
     @Bean
@@ -27,37 +31,13 @@ public class SecurityConfig {
                 requests
                         .requestMatchers("/hi-free-world").permitAll()
                         .requestMatchers("/guardian").denyAll()
+                        .requestMatchers("/public").permitAll()
                         .anyRequest().authenticated());
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(withDefaults());
-//        http.sessionManagement(session ->
-//                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.httpBasic(withDefaults());
         return http.build();
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        JdbcUserDetailsManager manager =
-//                new JdbcUserDetailsManager();
-//        if (!manager.userExists("user1")) {
-//            manager.createUser(
-//                    User.withUsername("user1")
-//                            .password("{noop}password1")
-//                            .roles("USER")
-//                            .build()
-//            );
-//        }
-//        if (!manager.userExists("admin")) {
-//            manager.createUser(
-//                    User.withUsername("admin")
-//                            .password("{noop}adminPass")
-//                            .roles("ADMIN")
-//                            .build()
-//            );
-//        }
-//        return manager;
-//    }
 
 
     @Bean

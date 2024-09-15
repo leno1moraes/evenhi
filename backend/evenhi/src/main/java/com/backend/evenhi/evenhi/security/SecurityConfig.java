@@ -37,9 +37,9 @@ public class SecurityConfig {
                         .requestMatchers("/public").permitAll()
                         .anyRequest().authenticated());
         http.csrf(AbstractHttpConfigurer::disable);
-        http.addFilterBefore(new CustomLoggingFilter(),
-                UsernamePasswordAuthenticationFilter.class);
-        //http.formLogin(withDefaults());
+        //http.addFilterBefore(new CustomLoggingFilter(), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterAfter(new RequestValidationFilter(), CustomLoggingFilter.class);
+        http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();
     }

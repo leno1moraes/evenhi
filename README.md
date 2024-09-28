@@ -1,2 +1,2 @@
-# evenhi
+# EvenHi
 Sistema Gerenciador de Eventos

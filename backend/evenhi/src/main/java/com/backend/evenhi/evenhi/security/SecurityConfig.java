@@ -5,9 +5,14 @@ import com.backend.evenhi.evenhi.model.Role;
 import com.backend.evenhi.evenhi.model.User;
 import com.backend.evenhi.evenhi.repository.RoleRepository;
 import com.backend.evenhi.evenhi.repository.UserRepository;
+import com.backend.evenhi.evenhi.security.jwt.AuthEntryPointJwt;
+import com.backend.evenhi.evenhi.security.jwt.AuthTokenFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,6 +34,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
         jsr250Enabled = true)
 public class SecurityConfig {
 
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
+
+    @Bean
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
@@ -42,20 +55,30 @@ public class SecurityConfig {
                 requests
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/hello-world").permitAll()
+                        .requestMatchers("/instructions").permitAll()
                         .requestMatchers("/guardian").denyAll()
                         .requestMatchers("/public").permitAll()
                         .requestMatchers("/api/csrf-token").permitAll()
+                        .requestMatchers("/api/auth/public/**").permitAll()
                         .anyRequest().authenticated());
 
 
         //http.addFilterBefore(new CustomLoggingFilter(), UsernamePasswordAuthenticationFilter.class);
         //http.addFilterAfter(new RequestValidationFilter(), CustomLoggingFilter.class);
 
+        http.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler));
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
         http.formLogin(withDefaults());
 
         http.httpBasic(withDefaults());
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

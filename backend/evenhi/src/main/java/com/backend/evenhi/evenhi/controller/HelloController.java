@@ -25,4 +25,18 @@ public class HelloController {
     public String sayGardian(){
         return "Hi guardian";
     }
+
+    @GetMapping("/instructions")
+    public String instructions(){
+        String texto;
+
+        texto = "Instruções de Funcionamento \n";
+        texto += " \n";
+        texto += "1 - Obter o X-XSRF-TOKEN e colocar nos Headers do endpoint \n";
+        texto += "endpoint: /event/add \n";
+        texto += " \n";
+        texto += "2 - Obter Autorization JWT e colocar nos Headers do endpoint \n";
+        texto += "endpoint: /api/auth/public/signin \n";
+        return texto;
+    }
 }
